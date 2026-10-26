@@ -43,7 +43,7 @@
 - `codex mcp get blender --json`과 서버 기본값·실제 접속을 확인. 주소는 HTTP가 아닌 `호스트:포트`.
 - 씬 조회와 Python으로 응답, `bpy.app.version_string`, 현재 씬, `bpy.data.filepath` 확인.
 - 실제 파일 경로가 `design/work.blend` 또는 사용자가 지정한 파일과 같은지 확인. 미저장·불일치·미확인은 실패.
-- 둘 다 선택하고 Unity 검증에 성공했다면 `blender_bridge` 대체 사용 가능. 주소도 검증.
+- Unity와 Blender는 각각 직접 MCP 연결 사용. 사용자의 명시적인 활성화 요청이 없으면 `blender_bridge`를 활성화하지 않기.
 
 ## 개발·검증
 
