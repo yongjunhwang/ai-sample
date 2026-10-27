@@ -1,10 +1,10 @@
 # Unity + Blender AI 작업 공간
 
-Codex / Claude Code로 Unity와 Blender를 연결해 작업합니다. 기본 샘플로 unity 2022.3.3 및 blender 5.23 에 mcp 연결을 한 상태 입니다.
+AI tool(`antigravity`)로 Unity와 Blender를 연결해 작업합니다. 기본 샘플로 unity 2022.3.3 및 blender 5.23 에 mcp 연결을 한 상태 입니다.
 
 ## 기본 준비사항
 
-- unity, blender, git, ai tool(codex 혹은 claude code 등) 을 설치한다.
+- unity, blender, git, ai tool(antigravity) 을 설치한다.
 - 개발만 하거나, 디자인만 하려면 unity, blender 중 하나를 생략해도 무방하다.
 - 추가적으로 uv 툴을 설치한다. [uv 설치 안내](#uv-설치-안내)
 
@@ -16,29 +16,91 @@ Codex / Claude Code로 Unity와 Blender를 연결해 작업합니다. 기본 샘
 
 ## 접속 및 동작 준비 시작
 
+### uv 설치
+
+[uv 설치하기 참고자료](https://docs.astral.sh/uv/getting-started/installation/)
+
+윈도우 에서는
+- Win 키를 누르거나 화면 아래 시작 버튼을 클릭합니다.
+- PowerShell 또는 Windows PowerShell을 입력합니다.
+- 검색된 Windows PowerShell을 선택해 실행합니다.
+- powershell 에서는 다음 명령어를 입력한다.
+```powershell
+winget install --id astral-sh.uv -e
+```
+
+MacOS 에서는 
+- 화면 아래쪽 바에서 로켓 모양 아이콘인 Launchpad(런처패드)를 클릭합니다.
+- 맨 위 검색창에 `termianl` 이라고 입력해 터미널을앱을 실행합니다.
+- 다음의 명령어 입력하여 설치합니다.
+```
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
 ### unity
-1. Unity 프로젝트를 열고 패키지 로딩과 컴파일을 기다립니다.
-2. **Window > MCP for Unity**에서 HTTP 서버와 Bridge를 시작합니다.
+1. Unity 프로젝트를 열고 패키지 로딩을 기다립니다.
+2. **Window > MCP for Unity > Toggle MCP Window** 에 들어갑니다.
+
+   ![Toggle MCP Window 메뉴](images/unity_mcp1.png)
+
+3. **Transport**는 `HTTPLocal`, **HTTP URL**은 `http://127.0.0.1:8080`으로 두고 **Start Server → Connect** 후 `Session Active`를 확인합니다. 사용하는 CLI는 **Client Configuration**에서 **Configure**를 누릅니다.
+
+   ![MCP for Unity 창](images/unity_mcp2.png)
 
 ### blender
-1. Blender에서 `design/work.blend`를 열고 MCP 애드온 서버를 시작합니다.
-2. 사용할 CLI에 MCP 서버를 등록하고 세션을 다시 시작합니다. 이미 등록되어 있으면 중복 추가하지 않습니다.
+1. Blender에서 `design/work.blend`를 열고 로딩을 기다립니다.
+2. 오른쪽 바에서 MCP 애드온 서버를 확인합니다.
+
+   ![MCP for Unity 창](images/blender_mcp1.png)
+
+3. 가장 상단에서 Connected ... 라고 되어있으면 연결된 상태입니다.
+4. 연결이 되지 않아 있으면, Connect to MCP Server 버튼을 눌러 Connected 상태가 되는것을 확인합니다.
+
+
+### ai tool (`Antigravity`)
+
+1. Antigravity 를 설치하여 준비합니다.
 
 ### 기본 주소:
 
 - Unity: `http://localhost:8080/mcp`
-- Blender: `127.0.0.1:9876` (TCP, HTTP 주소 아님)
+- Blender: `http://127.0.0.1:9876` (TCP, HTTP 주소 아님)
 
 ## 작업 시작
 
-저장소 루트에서 ai tool (`codex`, `claude` 등) 을 실행하고 작업을 요청합니다. (codex desktop 등 GUI 프로그램도 마찬가지로 해당 폴더를 연다)
+### AI tool(`antigravity`) 시작 및 프로젝트 설정
 
-- 루트에서 시작: Unity / Blender / 전부 선택 → 주소 확인 → 연결 검증.
-- `development/`에서 시작: Unity 주소 확인부터 진행.
-- `design/`에서 시작: Blender 주소 확인부터 진행.
-- 같은 대화에서 확정한 대상과 주소는 다시 묻지 않습니다.
+저장소 루트에서 ai tool (`antigravity`) 을 실행하고 작업을 요청합니다. <br>
+해당 git 에서 다운받은 디렉토리에 프로젝트를 시작한다.
 
-`준비되었습니다.`가 나오면 연결 확인 완료입니다. 실패하면 안내된 조치를 따릅니다. 지침 파일과 주소 답변만으로 서버가 설치되거나 연결 설정이 바뀌지는 않습니다.
+![File > Open Folder1](images/antigravity_folder1.png)
+
+![File > Open Folder2](images/antigravity_folder2.png)
+
+![File > Open Folder3](images/antigravity_folder3.png)
+
+(참고사항)
+- 루트에서 시작: Unity / Blender 전부 제어
+- `development/`에서 시작: Unity 제어.
+- `design/`에서 시작: Blender 제어.
+
+### unity, blender 연결 
+
+- ai tool (`antigravity`) 에서 대화를 시작한다.
+
+![세션 시작](images/antigravity_session1.png)
+
+![세션 연결](images/antigravity_session2.png)
+
+- 대화에 맞추어서 unity, blender 에 연결한다.
+- 첫 대화라면 그에 맞춘 mcp 를 자동으로 설치하도록 된다. 모두 allow 하여 설치 및 연결을 승인한다.
+
+![mcp 승인](images/antigravity_allow.png)
+
+- 두번째 접속 이후라면 mcp 는 이미 설치된 상태라서 unity 혹은 blender 에 연결을 기다힌다.
+- `준비되었습니다.` 가 나오면 연결 확인 완료입니다. 
+- `실패했습니다.` 가 나오면 연결이 최소되었습니다. 취소된 이유가 나오는데, 나오는 이유에 맞추어 연결을 조정합니다. 
+- 준비가 된 이후에는 개발을 진행합니다.
 
 ## 개발/디자인 시작
 
@@ -116,8 +178,10 @@ pip install 활용
 
 ### 2. Blender: 애드온 설치 → 서버 시작
 
-1. [MCP for Blender의 addon.py](https://github.com/ahujasid/mcp-for-blender/blob/main/addon.py)를 열고 **Download raw file**로 저장합니다.
-2. Blender에서 **Edit > Preferences > Add-ons > 오른쪽 위 메뉴 > Install from Disk…**로 `addon.py`를 선택합니다. 구버전은 **Install…** 버튼을 사용합니다.
+1. 다음 중 하나를 내려받습니다.
+   - Blender 5.1 이상: [Blender Lab MCP v1.0.3 (mcp-1.0.3.zip)](https://projects.blender.org/lab/blender_mcp/releases/download/v1.0.3/mcp-1.0.3.zip?repository=https%3A%2F%2Flab.blender.org%2F&blender_version_min=5.1.0) — zip 그대로 사용합니다.
+   - 그 외: [MCP for Blender의 addon.py](https://github.com/ahujasid/mcp-for-blender/blob/main/addon.py)를 열고 **Download raw file**로 저장합니다.
+2. Blender에서 **Edit > Preferences > Add-ons > 오른쪽 위 메뉴 > Install from Disk…**로 내려받은 파일(`mcp-1.0.3.zip` 또는 `addon.py`)을 선택합니다. 구버전은 **Install…** 버튼을 사용합니다.
 3. 설치된 **MCP for Blender**(구버전: **Blender MCP**)를 체크해 활성화합니다.
 4. 작업할 `.blend` 파일을 열고, **3D Viewport 위에 마우스를 둔 상태로 `N`**을 누릅니다.
 5. 오른쪽 **MCP for Blender / BlenderMCP** 탭에서 포트 `9876`을 확인하고 **Start MCP Server**(구버전: **Connect to Claude**)를 누릅니다. 이미 실행 중이면 그대로 둡니다.
