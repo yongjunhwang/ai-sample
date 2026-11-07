@@ -1,6 +1,7 @@
 # Unity 작업 지침
 
 - 상위 `AGENTS.md` 적용. Unity 경로는 이 폴더 기준.
+- **문서 동기화 필수**: 개발 작업(코드, 씬, 컴포넌트 추가/수정/삭제 등)을 완료하면 언제나 `README.md`, `ARCHITECTURE.md`, `plan.md`에 변경 사항 및 체크리스트 진행 상황을 즉시 반영하여 최신 상태 유지.
 - 여기서 시작한 새 대화는 Unity만 연결. 대상 선택 없이 Unity 주소부터 질문. 기존 대화의 연결 선택은 유지. 사용자 요청 우선.
 - 기준은 Unity 2022.3.62f3, Built-in, Input Manager. 실제 설정·버전·패키지는 파일로 확인하고 필요한 범위만 변경.
 - 배치: `Assets/Scripts/`, `Editor/`, `Prefabs/`, `Scenes/`. 테스트는 `Assets/Tests/EditMode/`, `PlayMode/`와 필요한 assembly definition 사용.
