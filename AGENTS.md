@@ -20,7 +20,7 @@
 
 1. 선택한 대상만 등록 여부 확인. 읽기 전용: `codex mcp get <이름> --json`(Codex), `claude mcp get <이름>`(Claude Code), `~/.gemini/antigravity/mcp_config.json`의 `mcpServers.<이름>` 조회(Antigravity). 현재 도구에 맞는 쪽만 사용.
    - Unity: `unityMCP`, Blender: `blender`
-2. 이미 등록되어 있으면 질문 없이 다음 단계로 진행.
+2. 이미 등록되어 있으면 질문 없이 다음 단계로 진행. Unity는 `unityMCP` 또는 `unity-mcp` 중 하나만 등록·노출되어 있어도 등록된 것으로 취급.
 3. 미등록이면 설치할 명령을 보여주고 승인을 묻기. 답변 전에는 설치하지 않기.
    > `unityMCP` MCP가 설치되어 있지 않습니다. 설치할까요? Y/예/승인 등을 입력하면 설치하고, 아니면 건너뜁니다.
    > `blender` MCP가 설치되어 있지 않습니다. 설치할까요? Y/예/승인 등을 입력하면 설치하고, 아니면 건너뜁니다.
@@ -78,7 +78,11 @@
 
 ### Unity
 
-- `unity-mcp-orchestrator` 스킬 적용. 도구 노출과 `codex mcp get unityMCP --json` 주소 확인. 스킴이 없으면 `http://` 사용.
+- Unity는 `unityMCP`(Coplay/MCP for Unity, `mcpforunity://`) 또는 `unity-mcp`(공식, `mcp__unity-mcp__*` 도구) 중 **하나만 연결되면 통과**. 둘 중 먼저 정상 확인된 쪽을 사용하고 나머지는 실패해도 무시(보고에 참고로만 기재). 둘 다 실패하면 `실패했습니다.`.
+- `unity-mcp`로 검증할 때: `Unity_GetConsoleLogs`·`Unity_RunCommand`(읽기 전용: `Application.dataPath`, `EditorSceneManager.GetActiveScene()`, `Application.unityVersion`)로 응답 확인 후 `Application.dataPath`가 `development/Assets`와 같은지 비교. `unityMCP` 전용 단계(아래 `mcpforunity://`·`manage_scene`)는 생략.
+- `unity-mcp`만 정상 연결되어도 Unity는 **성공**(`준비되었습니다.`). `unityMCP`가 미등록·연결 거부(ECONNREFUSED)·타임아웃이어도 실패로 보지 않고 참고로만 보고. `unityMCP` 전용 주소 대조도 생략.
+- `unityMCP` 미등록이어도 `unity-mcp`가 연결되어 있으면 설치 질문 생략.
+- `unityMCP` 검증 시 `unity-mcp-orchestrator` 스킬 적용. 도구 노출과 `codex mcp get unityMCP --json` 주소 확인. 스킴이 없으면 `http://` 사용.
 - `mcpforunity://instances` 조회. 여러 인스턴스면 프로젝트 경로를 확인하고 `set_active_instance`로 고정.
 - `mcpforunity://project/info`의 `projectRoot`와 `development/`의 실제 경로 비교. 심볼릭 링크를 해석하고 `Assets`, `Packages`, `ProjectSettings` 존재 확인.
 - `mcpforunity://custom-tools`, `mcpforunity://editor/state` 조회. 도구가 없으면 커스텀 도구·비활성 그룹 확인.

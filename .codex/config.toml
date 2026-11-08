@@ -1,0 +1,7 @@
+[mcp_servers.blender]
+command = "uvx"
+args = ["mcp-for-blender"]
+
+[mcp_servers.unity-mcp]
+command = "cmd"
+args = ["/c", "%USERPROFILE%\\.unity\\relay\\relay_win.exe", "--mcp"]

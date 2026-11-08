@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "blender": {
+      "command": "uvx",
+      "args": ["mcp-for-blender"]
+    },
+    "unity-mcp": {
+      "command": "cmd",
+      "args": ["/c", "%USERPROFILE%\\.unity\\relay\\relay_win.exe", "--mcp"]
+    }
+  }
+}
