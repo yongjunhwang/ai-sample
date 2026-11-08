@@ -79,12 +79,12 @@ pip install uv
 ```
 
 2. blender 를 열고  `design/work.blend`를 열고 로딩을 기다립니다.
-3. 오른쪽 바에서 MCP 애드온 서버를 확인합니다.
+3. **Edit > Preference** 으로 들어갑니다.
 
-   ![MCP for Unity 창](images/blender_mcp1.png)
+   ![MCP for blender 1](images/blender_mcp1.png)
+   ![MCP for blender 2](images/blender_mcp2.png)
 
-5. 가장 상단에서 Connected ... 라고 되어있으면 연결된 상태입니다.
-6. 연결이 되지 않아 있으면, Connect to MCP Server 버튼을 눌러 Connected 상태가 되는것을 확인합니다.
+4. mcp for blender 가 설치된 상태면 준비가 되어있는 상태입니다.
 
 
 ### ai tool (`Antigravity`)
