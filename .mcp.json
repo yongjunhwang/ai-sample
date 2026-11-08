@@ -1,16 +1,25 @@
 {
   "mcpServers": {
-    "blender": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": ["mcp-for-blender"],
-      "env": {}
-    },
     "unity-mcp": {
       "type": "stdio",
       "command": "cmd",
-      "args": ["/c", "%USERPROFILE%\\.unity\\relay\\relay_win.exe", "--mcp"],
+      "args": [
+        "/c",
+        "%USERPROFILE%\\.unity\\relay\\relay_win.exe",
+        "--mcp"
+      ],
       "env": {}
+    },
+    "unityMCP": {
+      "type": "http",
+      "url": "http://localhost:8080/mcp"
+    },
+    "blender": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-for-blender"
+      ]
     }
   }
 }

@@ -3,8 +3,9 @@
     "blender": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["mcp-for-blender"],
-      "env": {}
+      "args": [
+        "mcp-for-blender"
+      ]
     }
   }
 }

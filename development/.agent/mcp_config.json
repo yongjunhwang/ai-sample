@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "unity-mcp": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "%USERPROFILE%\\.unity\\relay\\relay_win.exe",
+        "--mcp"
+      ]
+    },
+    "unityMCP": {
+      "serverUrl": "http://localhost:8080/mcp"
+    }
+  }
+}
