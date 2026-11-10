@@ -1,6 +1,6 @@
 # Unity + Blender AI 작업 공간
 
-AI tool(`antigravity`)로 Unity와 Blender를 연결해 작업합니다. 기본 샘플로 unity 2022.3.3 및 blender 5.23 에 mcp 연결을 한 상태 입니다.
+AI tool(`antigravity`)로 Unity와 Blender를 연결해 작업합니다. 기본 샘플로 unity 6.3.8 및 blender 5.23 에 mcp 연결을 한 상태 입니다.
 
 ## 기본 준비사항
 
@@ -16,82 +16,50 @@ AI tool(`antigravity`)로 Unity와 Blender를 연결해 작업합니다. 기본 
 
 ## 접속 및 동작 준비 시작
 
-### python, uv 설치
+### uv 설치
 
-1. 공식 홈페이지 접속: Python 공식 웹사이트(https://www.python.org/downloads/)에 접속합니다.
-   (참고: python 3.14 - https://www.python.org/downloads/release/python-31410/)
-2. window/MacOS/Linux 환경에 맞추어 알맞은 설치 파일을 다운로드 합니다.
-3. 다운로드 받은 설치파일을 설치합니다.
+[uv 설치하기 참고자료](https://docs.astral.sh/uv/getting-started/installation/)
 
-#### window
-- 설치 과정에서 화면 맨 아래에 있는 Add python.exe to PATH (버전에 따라 Add Python 3.x to PATH) 체크박스에 무조건 체크를 합니다.
-- 윈도우 검색창에서 powershell 을 입력하여 powershell 을 실행합니다.
-- 다음의 명령어를 입력하여 uv 를 설치합니다.
-
-```
-pip install uv
+윈도우 에서는
+- Win 키를 누르거나 화면 아래 시작 버튼을 클릭합니다.
+- PowerShell 또는 Windows PowerShell을 입력합니다.
+- 검색된 Windows PowerShell을 선택해 실행합니다.
+- powershell 에서는 다음 명령어를 입력한다.
+```powershell
+winget install --id astral-sh.uv -e
 ```
 
-#### macOS
-- 기본 설치시에 자동으로 경로 설정이 완료됩니다.
-- 키보드에서 Command(⌘) + 스페이스바를 동시에 누릅니다
-- 영어로 터미널 또는 terminal이라고 입력하여 terminal 을 실행합니다.
-- 다음의 명령어를 입력하여 uv 를 설치합니다.
-
+MacOS 에서는 
+- 화면 아래쪽 바에서 로켓 모양 아이콘인 Launchpad(런처패드)를 클릭합니다.
+- 맨 위 검색창에 `termianl` 이라고 입력해 터미널을앱을 실행합니다.
+- 다음의 명령어 입력하여 설치합니다.
 ```
-pip install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
-
--------
-
 
 ### unity
 1. Unity 프로젝트를 열고 패키지 로딩을 기다립니다.
-2. **Edit > Project Settings > AI > Unity MCP Server** 에 들어갑니다.
+2. **Window > MCP for Unity > Toggle MCP Window** 에 들어갑니다.
 
-   ![MCP for Unity 창 1](images/unity_mcp1.png)
-   ![MCP for Unity 창 2](images/unity_mcp2.png)
+   ![Toggle MCP Window 메뉴](images/unity_mcp1.png)
 
-3. Unity Bridge 에서 stopped 으로 되어 있으면 Start 를 눌러 입력한다.
-4. 사용하는 AI 에 맞추어 Configure 를 선택하여 활성화 한다.
+3. **Transport**는 `HTTPLocal`, **HTTP URL**은 `http://127.0.0.1:8080`으로 두고 **Start Server → Connect** 후 `Session Active`를 확인합니다. 사용하는 CLI는 **Client Configuration**에서 **Configure**를 누릅니다.
 
-   ![MCP for Unity 창 3](images/unity_mcp3.png)
-
+   ![MCP for Unity 창](images/unity_mcp2.png)
 
 ### blender
-1. blender mcp 를 설치합니다,
+1. Blender에서 `design/work.blend`를 열고 로딩을 기다립니다.
+2. 오른쪽 바에서 MCP 애드온 서버를 확인합니다.
 
-#### window
-- 윈도우 검색창에서 powershell 을 입력하여 powershell 을 실행합니다.
-- 다음의 명령어를 입력하여 uv 를 설치합니다.
+   ![MCP for Unity 창](images/blender_mcp1.png)
 
-```
- uvx mcp-for-blender install-addon
-```
-
-#### macOS
-- 키보드에서 Command(⌘) + 스페이스바를 동시에 누릅니다
-- 영어로 터미널 또는 terminal이라고 입력하여 terminal 을 실행합니다.
-- 다음의 명령어를 입력하여 uv 를 설치합니다.
-
-```
- uvx mcp-for-blender install-addon
-```
-
-2. blender 를 열고  `design/work.blend`를 열고 로딩을 기다립니다.
-3. **Edit > Preference** 으로 들어갑니다.
-
-   ![MCP for blender 1](images/blender_mcp1.png)
-   ![MCP for blender 2](images/blender_mcp2.png)
-
-4. mcp for blender 가 설치된 상태면 준비가 되어있는 상태입니다.
+3. 가장 상단에서 Connected ... 라고 되어있으면 연결된 상태입니다.
+4. 연결이 되지 않아 있으면, Connect to MCP Server 버튼을 눌러 Connected 상태가 되는것을 확인합니다.
 
 
 ### ai tool (`Antigravity`)
 
 1. Antigravity 를 설치하여 준비합니다.
-  (혹은 claude codex, codex(chatGPT) 도 관련 없습니다.)
-2. unity, blender 와 연결시 설치하는 툴은 모두 yes 를 입력해 줍니다.
 
 ### 기본 주소:
 
