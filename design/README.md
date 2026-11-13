@@ -1,22 +1,22 @@
 # 3D 에셋 및 디자인 파이프라인 가이드 (`design`)
 
-본 문서는 **PROJECT: TARTARUS (OMEGA PROTOCOL)** 다크 SF 바이오 호러 전술 FPS 프로토타입(`sample.md` 컨셉 기반)에 필요한 3D 에셋, 폐쇄형 발굴 기지 복도 환경, 라이팅/포스트프로세싱, 사이버네틱 HUD 아트 규격 및 **Unity 6.3.8** 연동 파이프라인을 정의합니다.
+본 문서는 **PROJECT: TARTARUS (OMEGA PROTOCOL)** 다크 SF 바이오 호러 전술 FPS 프로토타입(`sample.md` 컨셉 기반)에 필요한 3D 에셋, **3D 다층 수직 오픈스카이 아레나 환경**, 라이팅/포스트프로세싱, 사이버네틱 HUD 아트 규격 및 **Unity 6.3.8** 연동 파이프라인을 정의합니다.
 
 ---
 
 ## 1. 3D 게임 아트 & 비주얼 컨셉 아키텍처 (`sample.md` 기준)
 
-프로그래밍에 Clean Architecture가 있듯, 게임 아트 분야에는 **"Source-to-Engine 단방향 분리"**와 **"표준 네이밍 컨벤션"** 원칙을 적용하며, `sample.md`의 **다크 SF 지하 발굴 기지(`SEC-04 EXCAVATION` / `BIO-HAZARD L-4`)** 비주얼 무드를 충실히 구현합니다.
+프로그래밍에 Clean Architecture가 있듯, 게임 아트 분야에는 **"Source-to-Engine 단방향 분리"**와 **"표준 네이밍 컨벤션"** 원칙을 적용하며, `sample.md`의 **다크 SF 수직 발굴 분화구 아레나(`SEC-04 EXCAVATION CRATER` / `BIO-HAZARD L-4`)** 비주얼 무드를 충실히 구현합니다.
 
 ```mermaid
 flowchart LR
     subgraph DCC ["1. Source DCC (design/)"]
-        Blend["Blender 작업 원본 (.blend)<br/>- 복도 모듈, 무기, 바이오타이탄"]
+        Blend["Blender 작업 원본 (.blend)<br/>- 3D 오픈스카이 아레나, 캣워크, 무기, 크리처"]
         TexSrc["PBR & Emissive 재질<br/>(네온 시안 / 생체 코어 레드)"]
     end
 
     subgraph Pipeline ["2. Export & Standards"]
-        Standard["네이밍/스케일/피벗 검증<br/>(SM_, SK_, Wep_, CH_, -Z/Y-Up)"]
+        Standard["네이밍/스케일/피벗 검증<br/>- 피벗 바닥 Z=0 / 그립<br/>- 스케일 1.0 (Metric)<br/>- Forward -Z, Up Y"]
     end
 
     subgraph Engine ["3. Game Engine (development/)"]
@@ -28,14 +28,17 @@ flowchart LR
     Standard -->|"FBX / PNG 임포트"| UnityAssets
 ```
 
-### 핵심 비주얼 & 공간 무드 원칙
-1. **다크 SF 인더스트리얼 호러 무드**:
-   - **배경/안개**: 칠흑 같은 딥 네이비(`#020408`) 지수 안개(`FogExp2`)와 저조도 앰비언트(`#0a1120`).
-   - **대비 조명**: 천장/벽면의 차가운 **시안 네온 스트립(`#06b6d4`)**과 괴수 근처에서 불규칙하게 깜빡이는 **적색 비상 경보등(`#ff1e1e`)**, 그리고 플레이어 총기에 부착된 **고광량 택티컬 라이트(`#cffafe`)**의 강렬한 명암 대비.
-2. **Source / Engine 분리**: Blender 작업 파일, 고해상도 베이크 맵, 레퍼런스는 `design/`에 보존하고, 엔진(`development/Assets/`)에는 최적화된 모델 및 텍스처만 내보냅니다.
-3. **모듈러(Modular) 복도 설계**: 폭 12m × 높이 4.2m × 깊이 5m 단위의 아치형 기둥·배관·바닥 그리드 모듈을 조립하여 60m급 지하 발굴 복도를 구성합니다.
+### 핵심 비주얼 & 공간 무드 원칙 (3D 입체·오픈스카이 아키텍처)
+1. **3D 수직성(Verticality)과 오픈스카이(Open-Sky)**:
+   - **폐쇄형 평면 복도 탈피**: 상공이 완전히 개방된 거대 발굴 분화구 및 다층 채굴 시설 구조를 채택.
+   - **수직 사격각/전술 동선**: 지상 저지대(Ground Floor), 2~3층 공중 캣워크(Catwalk) 및 저격 타워, 경사로(Ramp), 산업용 계단(Stairs)을 유기적으로 연결하여 고지대 우위(High-Ground Advantage) 및 입체적 전투 공간을 제공합니다.
+   - **공중 기동 공간**: 열린 천장을 통해 결전 드래곤 보스(`CH_Boss_ArchDreadRaze`) 및 비행체(`CH_Monster_SporeFlyer`)가 자유롭게 활공, 선회, 급강하 브레스 공격을 감행합니다.
+2. **다크 SF 인더스트리얼 호러 무드**:
+   - **외계 상공/안개**: 칠흑 같은 딥 네이비(`#020408`) 지수 안개(`FogExp2`)와 상공에서 쏟아지는 차가운 문라이트(Moonlight).
+   - **대비 조명**: 캣워크와 지면 발판의 **시안 네온 가이드 스트립(`#06b6d4`)**과 괴수/보스 출현 시 깜빡이는 **적색 비상 경보등(`#ff1e1e`)**, 그리고 플레이어 총기 부착형 **고광량 택티컬 라이트(`#cffafe`)**의 강렬한 명암 대비.
+3. **Source / Engine 분리**: Blender 작업 파일, 고해상도 베이크 맵, 레퍼런스는 `design/`에 보존하고, 엔진(`development/Assets/`)에는 최적화된 모델 및 텍스처만 내보냅니다.
 4. **피벗(Pivot) 기준 준수**:
-   - 정적 프랍/복도 모듈/엄폐물: 지면 바닥 접촉면 중앙 (`Z = 0`)
+   - 지형/바닥/캣워크/엄폐물: 지면 바닥 접촉면 중앙 (`Z = 0`)
    - 무기: 1인칭 손 그립(Grip) 지점
    - 캐릭터/크리처: 양 발 사이 바닥 중앙
 
@@ -43,16 +46,28 @@ flowchart LR
 
 ## 2. 디렉토리 구조 및 네이밍 규칙
 
-### 디렉토리 구조
+### 디렉토리 구조 (에셋 1개 = `.blend` 파일 1개 분리 원칙)
 ```text
 design/
-├── References/              # 컨셉 아트, sample.md 목업, 무드보드
-├── Weapons/                 # 펄스 카빈 등 무기 3D 소스 파일 (.blend, 파츠)
-├── Characters/              # 바이오타이탄(Specimen-09) 및 적 캐릭터 소스 파일
-├── Environment/             # 지하 연구소 복도 모듈, 아치 기둥, 배관, 엄폐물
-├── UI/                      # 사이버네틱 HUD 아이콘, 레이더 그리드, 크로스헤어 아트워크
+├── References/              # 컨셉 아트 시트 및 Cropped/ (개별 크롭 PNG 31종)
+├── prompt/                  # Nano Banana / Tripo 3D / Blender AI 프롬프트 가이드
+├── Weapons/                 # 메인 무기 5종 (Wep_*.blend)
+│   ├── Wep_ARC42_Valkyrie.blend
+│   ├── Wep_Bergelmir09_Shotgun.blend
+│   ├── Wep_KronosV_RailDMR.blend
+│   ├── Wep_Aegis300_SmartSMG.blend
+│   ├── Wep_HeliosX_BeamCannon.blend
+│   ├── Secondary/           # 16종 부가 무기 및 런처 (Wep_Sec_01 ~ 16.blend)
+│   └── Bullets/             # 9종 개별 탄환/발사체 (Wep_Bullet_01 ~ 09.blend)
+├── Characters/              # 유저 캐릭터 및 몬스터/보스 분리 보관
+│   ├── Players/             # 6종 유저 플레이어 캐릭터 (SK_Player_*, CH_Avatar_*.blend)
+│   └── Monsters/            # 5종 일반 몬스터 및 1종 드래곤 메카 결전 보스 (CH_Boss_*, CH_Monster_*.blend)
+├── Environment/             # 3D 수직 아레나 모듈 15종 (SM_*.blend, work1~3.blend 분할)
+├── UI/                      # 사이버네틱 HUD 아이콘, 레이더 그리드
 ├── Textures/                # 원본 텍스처, 브러시, 베이크 맵
-├── work.blend               # 메인 통합 작업 원본
+├── scripts/                 # 블렌더 자동 분할, 시트 크롭, 리깅, 정규화 파이썬 스크립트
+├── work.blend               # 통합 씬 조립 및 보스/라이팅 작업 씬
+├── work1.blend ~ work3.blend # 환경 시트 A/B/C Tripo 3D 원본 임포트 파일
 └── README.md                # 본 문서
 ```
 
@@ -100,17 +115,25 @@ design/
 
 ---
 
-### C. 지하 발굴 기지 복도 환경 & 모듈러 엄폐물 에셋 (`SEC-04 EXCAVATION`)
+### C. 3D 수직 오픈스카이 아레나 & 환경 모듈러 에셋 (`SEC-04 EXCAVATION CRATER`)
 
-| 에셋명 | 규격 (가로×깊이×높이) | 용도 및 설명 (`sample.md` 복도 규격) |
+| 에셋명 | 규격 (가로×깊이×높이) | 3D 입체 전술 용도 및 사양 |
 |:---|:---|:---|
-| `SM_Corridor_Floor` | 12.0m × 5.0m × 0.2m | 인더스트리얼 메탈 그리드 바닥 타일 (`#0f131a`, 고금속성 반사) |
-| `SM_Corridor_Wall` | 0.3m × 5.0m × 4.2m | 좌/우측 중장갑 금속 복도 벽체 및 천장 마감 패널 (`#181c24`) |
-| `SM_Corridor_ArchPillar` | 12.0m × 0.4m × 4.2m | 5m 간격으로 배치되는 복도 보강용 좌/우 기둥(`0.5×4.2×0.4m`) 및 상단 가로보(`11.8×0.4×0.4m`) |
-| `SM_Corridor_NeonStrip` | 0.08m × 4.8m × 0.05m | 천장 좌/우(`X = ±2.5m`)에 부착되는 시안색(`#06b6d4`) 네온 컨듀잇 발광 라인 |
-| `SM_Corridor_WallPipe` | Ø0.24m × 5.0m | 복도 우측/좌측 벽면을 따라 이어지는 산업용 금속 배관 파이프 (`#334155`) |
-| `SM_Cover_Half_01` | 1.5m × 0.6m × **1.0m** | 하프 엄폐물: 전술 방호 바리케이드 (앉아서 사격 및 시야 확보) |
-| `SM_Cover_Full_01` | 1.0m × 1.0m × **2.2m** | 풀 엄폐물: 육각 방탄 기둥 (완전 은폐 가능) |
+| `SM_Catwalk_Straight_6m` | 1.34m × 6.0m × 0.94m | 공중 2층 철제 격자망 보행로, 양측 안전 난간 포함 (`work2.blend` 분할 완료) |
+| `SM_Catwalk_Platform_4x4` | 3.95m × 4.0m × 2.12m | 다층 교차점 및 2층 저격/방어용 플랫폼 (`work2.blend` 분할 완료) |
+| `SM_Stairs_Industrial_4m` | 4.20m × 5.32m × 4.0m | 지상과 2층(4m 높이)을 잇는 산업용 안전 계단 (`work2.blend` 분할 완료) |
+| `SM_Ramp_Access_4m` | 6.0m × 3.37m × 2.49m | 화물 수송로 및 완만한 입체 우회로 (`work2.blend` 분할 완료) |
+| `SM_Sniper_Tower_Octa` | 3.64m × 3.75m × 8.0m | 팔각형 다층 관측/저격 타워 + 사다리 통합 (`work2.blend` 분할 완료) |
+| `SM_Truss_Arch_OpenSky` | 5.53m × 8.0m × 4.76m | 상공이 뚫려 하늘/보스 활공이 노출되는 오픈 트러스 골조 (`work1.blend` 분할 완료) |
+| `SM_Crater_Floor_8x8` | 8.0m × 7.13m × 1.61m | 불규칙한 외계 암석 및 강화 금속 혼합 분화구 지면 (`work1.blend` 분할 완료) |
+| `SM_Blast_Wall_4m` | 1.38m × 6.34m × 5.0m | 아레나 외곽 차폐용 중장갑 방폭벽 (`work1.blend` 분할 완료) |
+| `SM_Blast_Wall_Doorway_4m` | 2.03m × 7.82m × 5.0m | 유압식 개구부가 포함된 방폭벽 게이트 (`work1.blend` 좌우 파트 통합) |
+| `SM_Rock_Debris_Slope` | 5.01m × 4.45m × 4.0m | 고지대 우회가 가능한 자연 암석 슬로프 (`work1.blend` 분할 완료) |
+| `SM_Cover_Low_Barricade` | 1.93m × 0.75m × **1.0m** | 하프 엄폐물: 전술 방호 바리케이드 (`work3.blend` 분할 완료) |
+| `SM_Cover_High_HexPillar` | 1.24m × 1.22m × **2.4m** | 풀 엄폐물: 전신 은폐형 육각 서버 기둥 (`work3.blend` 분할 완료) |
+| `SM_Crane_Suspended_Cargo`| 5.0m × 2.81m × 3.31m | 공중 컨테이너 프랍 (`work3.blend` 분할 완료) |
+| `SM_Cryo_Containment_Tank`| 2.20m × 1.15m × 1.12m | 생체 발광 액체 함유 엄폐 탱크 (`work3.blend` 분할 완료) |
+| `SM_Debris_Rock_Mound` | 2.11m × 2.40m × 1.24m | 암석/폐기물 엄폐 더미 (`work3.blend` 분할 완료) |
 
 ---
 
@@ -142,13 +165,48 @@ design/
 ## 4. 제작 파이프라인 (추천 작업 흐름)
 
 ```text
-[Step 1] Unity 씬에 다크 네이비 안개(Fog), 비상 적색 점멸등, 시안 네온 조명 및 URP Volume 세팅
+[Step 1] Unity 씬에 3D 오픈스카이 스카이박스, 지수 안개(Fog), 캣워크 시안 LED 가이드, 메인 문라이트 세팅
    ↓
-[Step 2] design/Environment/ 에서 지하 발굴 기지 복도 모듈(바닥/벽/아치 기둥/배관/네온) 모델링 및 배치
+[Step 2] design/Environment/ 에서 3D 수직 아레나 모듈(분화구 바닥, 캣워크, 계단, 경사로, 오픈 트러스 아치, 엄폐물) 배치
    ↓
-[Step 3] design/Weapons/ 에서 펄스 카빈(홀로그램 스크린 & 택티컬 라이트 포함) 및 무기 모델링 후 1인칭 카메라 장착
+[Step 3] design/Weapons/ 에서 1인칭 펄스 카빈/메인 무기 5종 및 부가 무기 16종, 탄환 9종 연동
    ↓
-[Step 4] design/Characters/ 에서 바이오타이탄(Specimen-09, 발광 생체 코어 & 낫 블레이드 & 포자 파티클) 제작 및 배치
+[Step 4] design/Characters/ 에서 6종 플레이어 및 5종 몬스터 배치, 상공에 드래곤 메카 결전 보스(비행/강하 브레스) 세팅
    ↓
-[Step 5] 사이버네틱 HUD(상단 텔레메트리, 중앙 타깃 락, 하단 바이탈/전술 버튼 바/레이더/탄약) 및 NVG·열화상 투시 연동
+[Step 5] 사이버네틱 HUD(고저차 거리 표시 나침반/레이더, 상단 텔레메트리, 중앙 타깃 락, 하단 바이탈/전술 버튼 바) 및 NVG·열화상 연동
 ```
+
+---
+
+## 5. AI 에셋 생성 및 `.blend` 자동 분할·정규화 워크플로우
+
+본 프로젝트의 3D 에셋은 **Nano Banana(2D 컨셉 시트) → Tripo 3D(메쉬 생성) → Blender MCP/Python(분할·정규화)** 파이프라인으로 제작되었습니다.
+
+### 5-1. 프롬프트 설계 방식 (`design/prompt/`)
+- **톤앤매너 고정**: 모든 프롬프트에 다크 SF 인더스트리얼 호러 무드(다크 건메탈 `#1e293b`, 시안 네온 `#06b6d4`, 경고 옐로우/레드)를 공통 키워드로 부여해 에셋 간 이질감을 제거했습니다.
+- **Nano Banana → Tripo 분리 설계** ([`design/prompt/README.md`](file:///home/yang/work/ai-sample/design/prompt/README.md)):
+  - **Nano Banana용**: Tripo 3D가 파츠를 깔끔하게 인식하도록 **단색 회색(`#808080`) 무그림자 배경**, **에셋 간 충분한 여백**, **정투영/3/4 뷰**를 강제하는 시트 프롬프트를 구성했습니다([`01_environment_3d_arena.md`](file:///home/yang/work/ai-sample/design/prompt/01_environment_3d_arena.md), [`02_weapons_characters_monsters.md`](file:///home/yang/work/ai-sample/design/prompt/02_weapons_characters_monsters.md)).
+  - **시트 크롭(Crop)**: 생성된 컨셉 시트는 [`crop_concept_sheets.py`](file:///home/yang/work/ai-sample/design/scripts/crop_concept_sheets.py) 및 [`crop_env_sheets.py`](file:///home/yang/work/ai-sample/design/scripts/crop_env_sheets.py)로 개별 PNG 31종([`design/References/Cropped/`](file:///home/yang/work/ai-sample/design/References/Cropped))으로 분할해 단품 재생성 및 레퍼런스로 재사용할 수 있게 했습니다.
+  - **Tripo 3D용**: 환경 에셋은 리깅이 불필요하므로 `Auto-Rig OFF` + `Image-to-3D`(또는 단품 `Text-to-3D`) 규칙을 명시했습니다.
+
+### 5-2. `.blend` 자동 분할 및 정규화 방식 (`design/scripts/`)
+Tripo Bridge로 임포트한 원본 `.blend`에는 여러 오브젝트가 한 씬에 묶여 있거나 스케일·피벗이 제각각이므로, **1 에셋 = 1 `.blend`** 원칙에 따라 Blender Python 스크립트로 일괄 정규화했습니다.
+
+1. **오브젝트 분리 및 다중 파트 병합**: 공간 좌표 또는 파트명(`tripo_part_*`) 기준으로 동일 에셋 파트를 묶고 `bpy.ops.object.join()`으로 단일 메쉬화.
+2. **트랜스폼 베이크 & 실측 스케일링**: 부모 Empty 해제 후 월드 변환 행렬을 메쉬 정점에 베이크(`Matrix.Identity(4)`)하고 `plan.md` 규격(미터 단위)에 맞춰 균일 스케일 적용.
+3. **피벗(Origin) 정렬**: 환경 모듈은 바닥 접촉면(`Z_min = 0`) 및 `X=0, Y=0` 중심 정렬, 무기/탄환/캐릭터는 원점 `(0, 0, 0)` 및 소켓 부착.
+4. **고아 데이터블록 정리 & 저장**: `orphans_purge(do_recursive=True)` 후 개별 `.blend` 파일로 저장.
+
+| 대상 | 원본 파일 | 실행 스크립트 | 산출물 |
+|---|---|---|---|
+| **환경 모듈 15종** | `work1.blend`~`work3.blend` | [`process_environment_blends.py`](file:///home/yang/work/ai-sample/design/scripts/process_environment_blends.py) | `design/Environment/SM_*.blend` (15개) |
+| **메인 무기 5종** | `work.blend` (시트 임포트) | [`process_five_weapons.py`](file:///home/yang/work/ai-sample/design/scripts/process_five_weapons.py) | `design/Weapons/Wep_*.blend` (5개) |
+| **부가 무기 16종** | Tripo 25파트 시트 | [`process_secondary_weapons_v2.py`](file:///home/yang/work/ai-sample/design/scripts/process_secondary_weapons_v2.py) | `design/Weapons/Secondary/Wep_Sec_*.blend` (16개) |
+| **탄환/발사체 9종** | Tripo 159파트 시트 | [`process_nine_bullets.py`](file:///home/yang/work/ai-sample/design/scripts/process_nine_bullets.py) | `design/Weapons/Bullets/Wep_Bullet_*.blend` (9개) |
+| **플레이어 6종** | Tripo 57파트 시트 | [`process_six_characters.py`](file:///home/yang/work/ai-sample/design/scripts/process_six_characters.py), [`rig_all_characters_and_monsters.py`](file:///home/yang/work/ai-sample/design/scripts/rig_all_characters_and_monsters.py) | `design/Characters/Players/*.blend` (6개, Armature+120f 애니메이션) |
+| **일반 몬스터 5종** | Tripo 163파트 시트 | [`process_five_monsters.py`](file:///home/yang/work/ai-sample/design/scripts/process_five_monsters.py), [`rig_all_characters_and_monsters.py`](file:///home/yang/work/ai-sample/design/scripts/rig_all_characters_and_monsters.py) | `design/Characters/Monsters/CH_Monster_*.blend` (5개, Armature+120f 애니메이션) |
+| **결전 보스 1종** | `work.blend` (`boss.png`) | [`rig_tripo_mesh.py`](file:///home/yang/work/ai-sample/design/scripts/rig_tripo_mesh.py), [`export_dragon_to_unity.py`](file:///home/yang/work/ai-sample/design/scripts/export_dragon_to_unity.py) | `CH_Boss_ArchDreadRaze.blend` + Unity FBX/4K PBR |
+
+### 5-3. 리깅 · 오디오 · VFX 방향 (새 세션 참고)
+- **리깅 상태**: 플레이어 6종 + 일반 몬스터 5종 + 보스 1종 **총 12종 모두 Armature + 스키닝 + `*_Combat_Idle` 120f 루프** 보유. *(다음 Tripo 생성 시에는 정면 A-Pose 단품으로 생성해 후처리 최소화)*
+- **오디오/VFX**: `.blend`와 무관하게 **Unity에 직접 임포트**하며, Python `.wav` 합성은 사용하지 않고 구매 에셋(`Weapon Soldier Sounds Pack Fps`, `100 베스트 이펙트` 등) + 외부 오디오 AI(ElevenLabs 등)를 사용합니다.

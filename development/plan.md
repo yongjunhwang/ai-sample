@@ -101,16 +101,19 @@ gantt
 
 - [ ] **플레이어 뷰 (Player Views)**
   - [ ] `FirstPersonBodyView.cs` (True First-Person 바디 리그 제어, 머리 컬링, 마우스 Pitch/Yaw)
-  - [ ] `CharacterControllerView.cs` (CharacterController를 통한 3단계 자세 높이/이동속도 Lerp)
+  - [ ] `CharacterControllerView.cs` (3단계 자세 높이/이동속도 Lerp 및 3D 점프/추락 물리)
   - [ ] `HeadBobView.cs` (발걸음 주기에 따른 카메라 8자 흔들림 및 무기 스웨이, 발소리 오디오 이벤트 동기화)
+- [ ] **3D 수직 아레나 및 비전 뷰 (Environment & Vision Views)**
+  - [ ] `ArenaEnvironmentView.cs` (오픈스카이 문라이트, 분화구 바닥, 2층 캣워크, 계단, 트러스 아치 조립 및 지수 안개 세팅)
+  - [ ] `VisionPostProcessView.cs` (야간투시 NVG, 열화상 Thermal 오버레이 볼륨 제어)
 - [ ] **무기 & AI 뷰 (Views)**
   - [ ] `WeaponView.cs` (1인칭 손/무기 렌더링, 우클릭 ADS 줌 Lerp, 발사 이펙트)
   - [ ] `LaserSightView.cs` (총기 부착형 LineRenderer 레이저 빔 및 충돌 표면 타깃 도트 렌더링)
   - [ ] `ProceduralRecoilView.cs` (단발/연발 스프링 기반 카메라 앵글 킥백 및 1인칭 무기 메시 물리 반동 애니메이션)
   - [ ] `SniperScopeView.cs` (저격총 전용 2D 오버레이 스코프 줌 및 블랙 아웃 마스크 뷰)
-  - [ ] `NavMeshAgentView.cs` (Unity NavMeshAgent를 래핑하여 INavMeshPort 구현)
+  - [ ] `NavMeshAgentView.cs` (Unity 3D 다층 NavMeshAgent를 래핑하여 INavMeshPort 구현 - 캣워크 및 계단 경유)
   - [ ] `HitboxPartView.cs` (Head, Heart, Body, Limbs 부위별 독립 콜라이더 및 피격 라우팅)
-  - [ ] `BossVFXView.cs` (마이크로 미사일 투사체, 흉부 레이저 스위핑 빔, 지면 강타 충격파 링 이펙트)
+  - [ ] `DragonFlightBreathController.cs` (상공 활공, 급강하 선회, 흉부 플라즈마 코어 발광 및 화염 브레스 제어)
   - [ ] `CanvasHUDView.cs` (TextMeshPro 기반 HP, 탄약, 적 대사, 크로스헤어 UI, 저격 스코프, **상단 보스 체력바**)
   - [ ] `AudioServiceView.cs` (Unity AudioSource 풀링 및 3D 공간 음향 재생기)
 - [ ] **설정 & Composition Root**
@@ -119,15 +122,18 @@ gantt
 
 ---
 
-### Phase 5: Stage 1 Level & 통합 검증
-> 1개 스테이지 맵 배치 및 완성도 테스트
+### Phase 5: Stage 1 Level & 통합 검증 (3D 다층 수직 아레나)
+> 3D 오픈스카이 아레나 맵 배치 및 완성도 테스트
 
-- [ ] **스테이지 그레이박싱**
-  - [ ] 4m 단위 바닥 및 외벽 배치
-  - [ ] 하프 엄폐물(1.0m) 6~8개, 풀 엄폐물(2.2m) 4개 전술적 배치
-  - [ ] 플레이어 스폰 포인트 및 적 5종 스폰 지점 설정
-  - [ ] Unity NavMesh 베이킹
+- [ ] **3D 아레나 레벨 조립**
+  - [ ] 8m 단위 분화구 바닥 및 외곽 4m 방폭벽 배치
+  - [ ] 4m 수직 계단, 30도 램프, 2층 공중 캣워크(6m) 및 저격 타워(8m) 배치
+  - [ ] 오픈 트러스 아치 골조를 세워 상공 개방형 공간 확보
+  - [ ] 하프 엄폐물(1.0m) 8개, 풀 엄폐물(2.4m) 6개, 공중 크레인 컨테이너 전술적 배치
+  - [ ] 다층 3D Unity NavMesh 베이킹 (지상 및 2층 캣워크/계단 연결)
+  - [ ] 플레이어 스폰 포인트 및 적 5종/비행 드래곤 보스 스폰 지점 설정
 - [ ] **전투 루프 통합 테스트**
-  - [ ] 플레이어 서기/앉기/포복 및 우클릭 조준 동작 검증
-  - [ ] 무기 5종(권총/기관총/저격총/레이저/단검) 사격, 단발/연발 물리 반동 및 스코프 조준 검증
-  - [ ] 적 5종의 LLM 전술(엄폐, 우회, 돌격) 실시간 반응 검증
+  - [ ] 지상-2층 캣워크 간 고저차 사격 및 시야각 검증
+  - [ ] 플레이어 서기/앉기/포복, 점프 및 우클릭 조준 동작 검증
+  - [ ] 무기군(메인/보조/발사체) 사격, 물리 반동 및 고저차 탄도 검증
+  - [ ] 적 5종의 다층 NavMesh 전술(엄폐, 캣워크 우회, 돌격) 및 공중 보스 활공/브레스 패턴 검증

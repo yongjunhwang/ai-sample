@@ -1,96 +1,98 @@
 # 3D 디자인 및 에셋 제작 계획서 (`design/plan.md`)
 
-본 문서는 **PROJECT: TARTARUS (`sample.md` 다크 SF 바이오 호러 전술 FPS)** 구현을 위한 Blender 3D 모델링, 지하 발굴 복도 환경, 라이팅/비전 효과, 사이버네틱 HUD 디자인 및 Unity 연동 **상세 작업 목록(WBS)**을 정의합니다.
+본 문서는 **PROJECT: TARTARUS (`sample.md` 다크 SF 바이오 호러 전술 FPS)** 구현을 위한 Blender 3D 모델링, 3D 다층 수직 오픈스카이 아레나 환경, 라이팅/비전 효과, 사이버네틱 HUD 디자인 및 Unity 연동 **상세 작업 목록(WBS)**을 정의합니다.
 
 ---
 
-## 작업 진행 현황 요약
+## 작업 진행 현황 요약 (새 세션 기준)
 
-```mermaid
-flowchart LR
-    P1["Phase 1: 지하 복도 & 라이팅<br/>(SEC-04 Excavation)"] --> P2["Phase 2: 펄스 카빈 & 무기군<br/>(홀로그램 탄약창/라이트)"]
-    P2 --> P3["Phase 3: 바이오타이탄 & 적군<br/>(생체 발광 코어/낫 블레이드)"]
-    P3 --> P4["Phase 4: 사이버네틱 HUD 디자인<br/>(세로 줄바꿈/잘림 방지 레이아웃)"]
-    P4 --> P5["Phase 5: 사운드 & Unity 프리팹<br/>(최종 씬 패키징)"]
-```
+| Phase | 대상 | 상태 | 비고 |
+|---|---|---|---|
+| **Phase 1** | 3D 환경 모듈 15종 (`Environment/`) | **모델 완료** | `work1~3.blend` 분할·스케일·`Z=0` 피벗 완료 / 라이팅·스카이박스(Unity) 대기 |
+| **Phase 2** | 무기 21종 + 탄환 9종 (`Weapons/`) | **모델 완료** | 메인 5종 + 보조 16종 + 탄환 9종 (정적 메쉬 + 소켓) |
+| **Phase 3** | 플레이어 아바타 6종 (`Characters/Players/`) | **리깅 완료** | 메쉬 링크 복구 + Armature + 120f `*_Combat_Idle` 적용 (`rig_all_characters_and_monsters.py`) |
+| **Phase 4** | 몬스터 5종 + 보스 1종 (`Characters/Monsters/`) | **리깅 완료** | 보스(25본+Unity FBX 완료) / 일반 5종(Armature+120f `*_Combat_Idle` 완료, FBX 대기) |
+| **Phase 5** | 사이버네틱 HUD & 비전 필터 (`UI/`) | **미착수** | Unity Canvas 구현 및 NVG/Thermal 볼륨 세팅 필요 |
+| **Phase 6** | 오디오 & VFX | **미착수** | Unity 구매 에셋(`Weapon Soldier Sounds Pack Fps`, `100 베스트 이펙트` 등) + 외부 오디오 AI 활용 (Python `.wav` 합성 금지) |
 
 ---
 
 ## 세부 제작 목록 (Checklist)
 
-### Phase 1: 지하 발굴 기지 복도 환경 & 다크 호러 조명 (`design/Environment/`)
-> `sample.md`의 `SEC-04 EXCAVATION` 폐쇄형 금속 복도 및 안개·조명·엄폐물 세팅
+### Phase 1: 3D 다층 수직 오픈스카이 아레나 & 환경 라이팅 (`design/Environment/`)
+> 단순 2D 복도가 아닌 **고저차(수직성)와 열린 하늘(Open-Sky)**을 지원하는 3D 배틀 아레나 (보스 비행 및 상/하층 전술 사격 지원)
 
-- [ ] **지하 복도 모듈러 구조물 (폭 12m × 높이 4.2m × 길이 60m 구성)**
-  - [ ] `SM_Corridor_Floor.blend` (12.0m × 5.0m × 0.2m 인더스트리얼 금속 그리드 바닥, `#0f131a`, Metalness 0.9, Roughness 0.35)
-  - [ ] `SM_Corridor_Wall.blend` (0.3m × 5.0m × 4.2m 좌/우 중장갑 금속 벽체 및 천장 패널, `#181c24`, Metalness 0.85, Roughness 0.65)
-  - [ ] `SM_Corridor_ArchPillar.blend` (5m 간격 아치형 지지 기둥 `0.5×4.2×0.4m` 좌/우 한 쌍 + 상단 가로보 `11.8×0.4×0.4m`)
-  - [ ] `SM_Corridor_NeonStrip.blend` (천장 `X = ±2.5m, Y = 4.15m` 시안 네온 발광 스트립 `0.08×4.8×0.05m`, `#06b6d4` Emissive)
-  - [ ] `SM_Corridor_WallPipe.blend` (벽면 `X = 5.85m, Y = 1.2m` 고압 산업 배관 파이프 `Ø0.24m × 5.0m`, `#334155`)
-- [ ] **전술 엄폐물 프랍 (바닥면 피벗 Z=0)**
-  - [ ] `SM_Cover_Half_01.blend` (1.5m × 0.6m × **1.0m** 콘크리트/금속 전술 바리케이드 / 앉아서 사격 가능)
-  - [ ] `SM_Cover_Full_01.blend` (1.0m × 1.0m × **2.2m** 육각 방탄 기둥 / 완전 은폐 가능)
-- [ ] **다크 호러 라이팅 & 안개 무드 세팅 (`sample.md` 기준)**
-  - [ ] 딥 네이비 배경색(`#020408`) 및 지수 안개(`FogExp2`, 밀도 `0.055`)
-  - [ ] 저조도 다크 앰비언트 라이트 (`#0a1120`, 강도 `0.6`)
-  - [ ] 괴수 구역 상단 **적색 비상 점멸등 (`Alarm PointLight`, `#ff1e1e`)** 및 **시안 네온 포인트 라이트 (`#06b6d4`)**
+- [x] **1. 수직 동선 & 공중 보행로 모듈러 구조물 (`work2.blend` 분할 및 Blender 정규화 완료)**
+  - [x] `SM_Catwalk_Straight_6m.blend` (길이 6.0m 격자형 철제 공중 보행로, 양측 안전 난간 포함, Z=0 정렬)
+  - [x] `SM_Catwalk_Platform_4x4.blend` (4.0m × 4.0m 2층/3층 저격 및 방어용 중앙 발판, Z=0 정렬)
+  - [x] `SM_Stairs_Industrial_4m.blend` (수직 4.0m 고저차 연결용 철제 지그재그 산업 계단, Z=0 정렬)
+  - [x] `SM_Ramp_Access_4m.blend` (길이 6.0m 경사각 화물/차량 램프, Z=0 정렬)
+  - [x] `SM_Sniper_Tower_Octa.blend` (높이 8.0m 팔각형 다층 감시 저격 타워 구조물 + 사다리 통합, Z=0 정렬)
 
----
+- [x] **2. 오픈스카이 골조 & 지형/벽체 모듈 (`work1.blend` 분할 및 Blender 정규화 완료)**
+  - [x] `SM_Truss_Arch_OpenSky.blend` (폭 8.0m 천장이 뚫려 하늘과 보스 비행이 노출되는 오픈 트러스 철골 아치, Z=0 정렬)
+  - [x] `SM_Crater_Floor_8x8.blend` (8.0m × 7.1m 외계 암석 및 강화 금속 혼합 분화구 지면, Z=0 정렬)
+  - [x] `SM_Blast_Wall_4m.blend` (높이 5.0m 외곽 경계선용 중장갑 방폭벽, Z=0 정렬)
+  - [x] `SM_Blast_Wall_Doorway_4m.blend` (높이 5.0m 유압 해치 게이트형 방폭벽, 좌우 파트 통합 및 Z=0 정렬)
+  - [x] `SM_Rock_Debris_Slope.blend` (높이 4.0m 점프 또는 도보로 고지대 우회가 가능한 자연 암석 슬로프 지형, Z=0 정렬)
 
-### Phase 2: 무기 에셋군 (`gun.png` 레퍼런스 기준 5종)
-> 1인칭 시야 우하단에 배치되는 하이테크 미래형 무기군
+- [x] **3. 입체 전술 엄폐물 & 공중 프랍 (`work3.blend` 분할 및 Blender 정규화 완료, 바닥면 피벗 Z=0)**
+  - [x] `SM_Cover_Low_Barricade.blend` (1.93m × 0.75m × **1.0m** 앉아쏴/시야확보 전술 바리케이드)
+  - [x] `SM_Cover_High_HexPillar.blend` (1.24m × 1.22m × **2.4m** 전신 은폐형 육각 서버 기둥)
+  - [x] `SM_Crane_Suspended_Cargo.blend` (5.0m × 2.81m × 3.31m 공중 컨테이너 프랍)
+  - [x] `SM_Cryo_Containment_Tank.blend` (2.2m × 1.15m × 1.12m 생체 발광 액체 전술 장애물 탱크)
+  - [x] `SM_Debris_Rock_Mound.blend` (2.11m × 2.4m × 1.24m 암석/폐기물 엄폐 더미)
 
-- [ ] **1. `Wep_ARC42_Valkyrie` (ARC-42 '발키리' 전자기 가속 돌격소총 - 메인 무기)**
-  - 다크 티타늄 리시버 + 카본 파이버 셰이디드 소총 프레임
-  - 핸드가드 6연장 블루 전자기 가속 코일(`M_EmitBlueCoil`)
-  - 상부 스마트 스코프 & 홀로그래픽 잔탄 디스플레이(`M_EmitCyan`)
-  - 소켓: `Socket_Grip`, `Socket_Muzzle`, `Socket_AmmoScreen`, `Socket_Flashlight`
-- [ ] **2. `Wep_Bergelmir09_Shotgun` (베르겔미르-09 중플라즈마 산탄총)**
-  - 화이트 세라믹 강화 복합 불펍(Bullpup) 바디
-  - 전면 4연장 마그네틱 링 노즐 & 후방 액체 헬륨 냉각 카트리지(블루 발광 실린더)
-- [ ] **3. `Wep_KronosV_RailDMR` (크로노스-V 고주파 레일 DMR)**
-  - 롱 실루엣 고배율 스마트 스코프(2중 셰일 구조), 은빛 커패시터 뱅크 2기
-  - 상/하 듀얼 레일 배럴 사이 고주파 집속 레일 코어 라인
-- [ ] **4. `Wep_Aegis300_SmartSMG` (이지스-300 분산형 스마트 SMG)**
-  - Vector 락 메커니즘 컴팩트 바디, 원형 전범위 사격 센서
-  - 상단 수평 장착형 회전식 원통 탄창
-- [ ] **5. `Wep_HeliosX_BeamCannon` (헬리오스-X 극초단파 집속 빔 캐넌)**
-  - 인더스트리얼 옐로우/블랙 중장비 하우징
-  - 3연장 회전식 구동 빔 배럴 클러스터, 고압 절연 케이블, 대형 배터리 셀
+- [ ] **4. 오픈스카이 다크 SF 라이팅 & 대기 연출**
+  - [ ] 개방된 상공 외계 행성 스카이박스 및 딥 네이비 지수 안개(`FogExp2`)
+  - [ ] 지상 하층 저조도 앰비언트 라이트 + 2층 캣워크 시안 LED 가이드 스트립
+  - [ ] 개방된 천장에서 떨어지는 지향성 메인 문라이트(Moonlight/Sunlight) 및 비상 점멸등 연출
 
 ---
 
-### Phase 3: 플레이어 아바타 및 클래스 (`avartar.png` 레퍼런스 기준 5종)
-> True First-Person 리그 및 전술 슈트
+### Phase 2: 무기 에셋 5종 (`gun.png` 레퍼런스 기준 — Tripo 3D 5종 분할 및 개별 `.blend` 분리 완료)
+> 1인칭 시야 우하단에 배치되는 하이테크 미래형 무기군. Tripo 3D 106개 파트를 5종 무기로 공간 분할하여 정규화 및 소켓 장착 완료.
 
-- [ ] **1. `SK_Player_AssaultOutrider` (어썰트 아웃라이더 - 나의 모습 메인 클래스)**
-  - 화이트/오렌지 하이테크 전술 슈트, 전술 스캔 바이저(시안 발광)
-  - 우측 어깨 4연장 미사일 포드 + 좌측 흉부/어깨 에너지 쉴드 소스
-- [ ] **2. `CH_Avatar_VanguardBreaker` (뱅가드 브레이커 - 최전방 돌격형)**
-  - 네이비/옐로우 중장갑 아머, 동력 증폭 파워 외골격, 배면 과열 방열 벤트
-- [ ] **3. `CH_Avatar_GhostRecon` (고스트 정찰병 - 원거리 암살/정찰병)**
-  - 다크 티타늄/스텔스 틸, 스펙트럼 센서 바이저, 홀로그래픽 광학 위장 망토
-- [ ] **4. `CH_Avatar_StrikeGear` (스트라이크 기어 - 고속 기동형)**
-  - 크림슨 레드/실버 슬림 에어로 아머, 후면 고속 제트 추진기 및 에너지 플레임
-- [ ] **5. `CH_Avatar_SentinelDefender` (센티넬 디펜더 - 전술 중화기병)**
-  - 올리브 그린/골드 브론즈 강화 프레임, 흉부 아크 원자로 코어, 배면 핵융합 발전기
+- [x] **1. `design/Weapons/Wep_ARC42_Valkyrie.blend` (ARC-42 '발키리' 전자기 가속 돌격소총 - 메인 무기, 22개 파트 통합, 0.88m, 4종 소켓 부착)**
+- [x] **2. `design/Weapons/Wep_Bergelmir09_Shotgun.blend` (베르겔미르-09 중플라즈마 산탄총, 17개 파트 통합, 0.78m, 4종 소켓 부착)**
+- [x] **3. `design/Weapons/Wep_KronosV_RailDMR.blend` (크로노스-V 고주파 레일 DMR, 21개 파트 통합, 1.18m, 4종 소켓 부착)**
+- [x] **4. `design/Weapons/Wep_Aegis300_SmartSMG.blend` (이지스-300 분산형 스마트 SMG, 20개 파트 통합, 0.62m, 4종 소켓 부착)**
+- [x] **5. `design/Weapons/Wep_HeliosX_BeamCannon.blend` (헬리오스-X 극초단파 집속 빔 캐넌, 26개 파트 통합, 1.15m, 4종 소켓 부착)**
+
+#### 부가 무기 16종 (Secondary / Sidearm Weapons & Launchers — `design/Weapons/Secondary/`)
+> 16개 개별 무기군 분할 및 `(0,0,0)` 정렬 완료 (`Wep_Sec_01.blend` ~ `Wep_Sec_16.blend`)
+
+- [x] `Wep_Sec_01.blend` ~ `Wep_Sec_08.blend` (스나이퍼, 불펍 AR, 펄스 캐넌, 로켓 다트, 트윈 SMG, 마이크로 미사일, 블래스터 피스톨, 배틀 카빈)
+- [x] `Wep_Sec_09.blend` ~ `Wep_Sec_16.blend` (마크스맨 라이플, 정밀 DMR, 골든 로켓 다트, 서브-블래스터, 컴팩트 SMG, 빔 랜스, 에너지 런처, RPG 런처)
+
+#### 탄환 및 발사체 9종 (Bullets & Projectiles — `design/Weapons/Bullets/`)
+> 9종 개별 발사체 분할 및 `(0,0,0)` 정렬 완료 (`Wep_Bullet_01.blend` ~ `Wep_Bullet_09.blend`)
+
+- [x] `Wep_Bullet_01.blend` ~ `Wep_Bullet_09.blend` (에너지 캡슐, 키네틱 다트, 핀드 미사일, 듀얼 포드, 아틸러리 쉘, 마이크로 시커, 토피도, 플라즈마 페네트레이터, 폭발체 오브)
 
 ---
 
-### Phase 4: 몬스터 및 보스 크리처 (`monster.png`, `boss.png` 기준)
-> 일반/특수 몬스터 5종 및 결전 드래곤 메카 보스
+### Phase 3: 플레이어 아바타 6종 (`design/Characters/Players/`)
+> 6종 개별 `.blend` 분리, 원점/소켓 정렬 + **Armature 리깅 · 스키닝 · 120f `*_Combat_Idle` 적용 완료** (`rig_all_characters_and_monsters.py`)
 
-- [ ] **1. `CH_Boss_ArchDreadRaze` (`boss.png` 결전 보스 - 아크 드레드 레이즈)**
-  - 비행/급강하 제어 거대 에너지 날개 추진기 (`Aero-Wing Thrusters`, 시안 발광)
-  - 흉부 거대 플라즈마 코어 (`Chest Plasma Core` - 주포 충전 시 개방되는 메인 약점)
-  - 양 어깨 중합 입자포 쌍발 포적 장치
-  - 꼬리 에너지 방출구 (`Energy Tail Spur` - 충격파 시 과열되는 적색 발광 부위)
-- [ ] **2. 일반 몬스터 5종 (`monster.png` 컨셉 반영)**
-  - `CH_Monster_Stalker` (스토커 - 경량형 수석병, 쿼드루페드 기계 표범, 광학 센서 헤드, 에너지 가시)
-  - `CH_Monster_XenoTrooper` (제노 트루퍼 - 중형 보병, 휴머노이드 외계 전사, 주황 에너지 코어 & 라이플)
-  - `CH_Monster_GuardianBeast` (가디언 비스트 - 중형 특수병, 갑각 공룡 형태, 등뒤 청색 에너지 결정체)
-  - `CH_Monster_SporeFlyer` (스포어 플라이어 - 비행 정찰형, 에너지 추진 날개 및 하부 포자 발사 장치)
-  - `CH_Monster_TitanBreaker` (티탄 브레이커 - 대형 돌격병, 어깨 듀얼 헤비 캐논, 흉부 코어 약점)
+- [x] `SK_Player_AssaultOutrider.blend` (메인 클래스, 휴머노이드 18본)
+- [x] `CH_Avatar_VanguardBreaker.blend` (돌격형, 휴머노이드 18본)
+- [x] `CH_Avatar_GhostRecon.blend` (정찰 크롤러 메카, 7본)
+- [x] `CH_Avatar_StrikeGear.blend` (고속 기동형, 휴머노이드 18본)
+- [x] `CH_Avatar_SentinelDefender.blend` (중화기병, 휴머노이드 18본)
+- [x] `CH_Avatar_Infiltrator.blend` (침투 특수병, 휴머노이드 18본)
+
+---
+
+### Phase 4: 몬스터 및 보스 크리처 (`design/Characters/Monsters/`)
+
+- [x] **결전 보스 `CH_Boss_ArchDreadRaze.blend`** (`work.blend` 25본 리깅, 120f 애니메이션, Unity FBX 48,596 Tris + 4K PBR 4종 익스포트, `DragonFlightBreath.unity` 완료)
+- [x] **일반 몬스터 5종 (개별 `.blend` 분리 + Armature 리깅 · 120f `*_Combat_Idle` 완료)**
+  - [x] `CH_Monster_Stalker.blend` (4족 표범+꼬리, 16본)
+  - [x] `CH_Monster_XenoTrooper.blend` (외계 전사, 휴머노이드 18본)
+  - [x] `CH_Monster_GuardianBeast.blend` (고릴라형 비스트, 14본)
+  - [x] `CH_Monster_SporeFlyer.blend` (4날개 비행 드론, 6본)
+  - [x] `CH_Monster_TitanBreaker.blend` (중장갑 타이탄 거인, 휴머노이드 18본)
 
 ---
 
@@ -122,15 +124,13 @@ flowchart LR
 
 ---
 
-### Phase 6: 오디오 & 사운드 에셋 (`design/Audio/`)
-> `sample.md`의 신디사이저 사운드 감성과 전술 효과음
+### Phase 6: 오디오 & VFX 에셋 (Unity 직접 임포트 기준)
+> Blender(`.blend`)와는 무관하게 Unity(`development/Assets/`)에 직접 적용. **Python 합성(`.wav` 생성)은 사용하지 않음.**
 
-- [ ] **1. 무기 및 전술 UI 효과음 (`Audio/Weapons/`, `Audio/UI/`)**
-  - [ ] `SFX_Wep_PulseCarbine_Fire.wav` (톱니파 어택 + 저주파 킥이 결합된 펄스 카빈 격발음)
-  - [ ] `SFX_Wep_Reload.wav` / `SFX_Wep_DryFire.wav` (재장전 완료음 및 탄약 소진 클릭음)
-  - [ ] `SFX_UI_TacticalClick.wav` (야간투시/열화상/라이트 버튼 조작 시 하이테크 멤브레인 클릭음)
-  - [ ] 기존 무기군 효과음 (`Pistol`, `Sniper`, `Plasma`, `Knife`) 및 히트마커(`Hitmarker`, `Headshot`, `KillConfirm`)
-- [ ] **2. 바이오타이탄 & 환경 호러 사운드 (`Audio/Monster/`, `Audio/Ambience/`)**
-  - [ ] `SFX_Monster_Biotitan_Growl.wav` (디스토션 걸린 중저음 `D1` 생체 괴수 포효음)
+- [ ] **1. 오디오 (보유 에셋 + 외부 오디오 AI)**
+  - [ ] 총기/재장전/발소리: 구매 에셋 `Weapon Soldier Sounds Pack Fps` 임포트 및 매핑
+  - [ ] 보스 브레스/괴수 포효/UI/BGM: 외부 오디오 AI(ElevenLabs 등)로 생성 후 Unity 배치
+- [ ] **2. VFX (보유 에셋 활용)**
+  - [ ] 보스 플라즈마 브레스, 총구 화염, 탄궤적, 피격 이펙트: 구매 에셋(`100 베스트 이펙트 패키지`, `Rocket Trail VFX pack`, `Hit Impact Effects FREE` 등) 적용
   - [ ] `SFX_Ambience_ExcavationRoom.wav` (지하 발굴 기지 저주파 룸톤 및 비상 경보음)
   - [ ] 이동/자세 전환 발소리 (`Stand`, `Crouch`, `Prone`) 및 재질별 피탄음 (`Concrete`, `Metal`, `Flesh`)

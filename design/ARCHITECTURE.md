@@ -1,6 +1,6 @@
 # 3D 게임 아트 파이프라인 아키텍처 (`design/ARCHITECTURE.md`)
 
-본 문서는 **PROJECT: TARTARUS (`sample.md` 기반 다크 SF 바이오 호러 FPS)**의 Blender 3D DCC 도구와 Unity 게임 엔진 간 **아트 에셋 파이프라인 아키텍처**, **지하 발굴 기지 복도 모듈러 규격**, **바이오타이탄/무기 소켓 체계**, **조명/투시 모드 및 HUD 레이아웃 규격**을 정의합니다.
+본 문서는 **PROJECT: TARTARUS (`sample.md` 기반 다크 SF 바이오 호러 FPS)**의 Blender 3D DCC 도구와 Unity 게임 엔진 간 **아트 에셋 파이프라인 아키텍처**, **3D 다층 수직 오픈스카이 아레나 규격**, **크리처/무기 소켓 체계**, **조명/투시 모드 및 HUD 레이아웃 규격**을 정의합니다.
 
 ---
 
@@ -12,7 +12,7 @@
 flowchart LR
     subgraph Phase1 ["1. Source DCC (design/)"]
         Ref["레퍼런스 & sample.md 목업<br/>(References/)"]
-        HighLow["복도 모듈 / 펄스 카빈 / 바이오타이탄<br/>(Environment/, Weapons/, Characters/)"]
+        HighLow["3D 수직 아레나 / 메인·부가무기 / 캐릭터·보스<br/>(Environment/, Weapons/, Characters/)"]
         Tex["PBR 메탈 & Emissive 재질<br/>(시안 네온 / 적색 바이오코어)"]
     end
 
@@ -33,30 +33,28 @@ flowchart LR
 
 ---
 
-## 2. 지하 발굴 기지 복도 & 모듈러 그리드 아키텍처 (`SEC-04 EXCAVATION`)
+## 2. 3D 다층 수직 오픈스카이 아레나 아키텍처 (`SEC-04 EXCAVATION CRATER`)
 
-`sample.md`의 어둡고 압박감 넘치는 금속성 지하 시설 복도를 조립식으로 구축하기 위해 **미터(Metric) 단위 그리드 스냅 시스템**과 **다층 조명/안개 구조**를 채택합니다.
+기존의 2D 평면 복도 구성을 탈피하여, 상공이 열린 거대 발굴 분화구 내에서 **지상층, 2층 캣워크, 저격 타워, 경사로, 계단, 공중 보스 비행 공간**이 유기적으로 맞물리는 **3D 수직성(Verticality) 아키텍처**를 적용합니다.
 
 ```mermaid
 flowchart TD
-    subgraph CorridorGrid ["지하 복도 모듈러 규격 (폭 12m × 높이 4.2m × 5m 간격)"]
-        CF["인더스트리얼 그리드 바닥 (SM_Corridor_Floor)<br/>12.0m × 5.0m × 0.2m (#0f131a, Metalness 0.9)"]
-        CW["중장갑 복도 벽체 & 천장 (SM_Corridor_Wall)<br/>좌/우 X=±6.0m, 천장 Y=4.2m (#181c24)"]
-        AP["아치형 보강 기둥 & 가로보 (SM_Corridor_ArchPillar)<br/>5m 간격 배치, 기둥 0.5×4.2×0.4m / 상단보 11.8×0.4×0.4m"]
-        NS["천장 시안 네온 컨듀잇 (SM_Corridor_NeonStrip)<br/>X=±2.5m, Y=4.15m (#06b6d4 Emissive)"]
-        WP["산업용 고압 배관 파이프 (SM_Corridor_WallPipe)<br/>벽면 X=5.85m, Y=1.2m (Ø0.24m × 5.0m, #334155)"]
-        CV["전술 엄폐물 (SM_Cover_Half_01 / Full_01)<br/>하프 1.5×0.6×1.0m / 풀 1.0×1.0×2.2m"]
+    subgraph VerticalArena ["3D 수직 오픈스카이 아레나 공간 계층"]
+        Sky["[상공 / Open-Sky]<br/>천장 개방, 외계 문라이트, 드래곤 보스 활공/급강하 구역"]
+        High["[상층 / Catwalk & Tower]<br/>2층 캣워크(6m), 발판(4x4m), 저격 타워(8m), 오픈 트러스 아치"]
+        Mid["[연결층 / Connectors]<br/>산업용 4m 수직 계단, 30도 수송 램프, 우회 암석 슬로프"]
+        Low["[지상층 / Ground Floor]<br/>8x8m 분화구 바닥, 외곽 4m 방폭벽, 하프/풀 엄폐물, 극저온 탱크"]
     end
 ```
 
 ### 1) 피벗(Pivot) 및 스냅 원칙
-- **모든 환경/복도/엄폐물 에셋**: 지면과 맞닿는 하단 바닥면 중앙(`X=0, Y=0, Z=0`)에 피벗 고정.
-- **모듈러 이음새**: 5m 복도 세그먼트와 4m 전술 그리드 단위로 정밀 스냅되도록 버텍스 정렬.
+- **모든 환경/지형/캣워크/엄폐물 에셋**: 지면과 맞닿는 하단 바닥면 중앙(`X=0, Y=0, Z=0`)에 피벗 고정.
+- **모듈러 이음새**: 4m 단위 그리드 및 2m 캣워크 규격으로 정밀 스냅되도록 버텍스 정렬.
 
 ### 2) 공간 조명 및 포스트프로세싱 아키텍처
-- **Deep Horror Ambient & Fog**: 배경색 및 지수 안개(`FogExp2`)를 `#020408`(밀도 `0.055`), 환경광을 `#0a1120`으로 설정하여 15~20m 너머의 심연을 암흑으로 차폐.
-- **Emergency Flickering Red Light**: 괴수 출현 구역 상단(`Y=3.8m, Z=-12m`)에 적색 포인트 라이트(`#ff1e1e`)를 배치하고 시간에 따른 불규칙 점멸(`Intensity = 2.0 + sin(t * 7.0) * 1.6`) 연출.
-- **Neon Cyan Accent Light**: 전방 복도 측면에 시안 포인트 라이트(`#06b6d4`)를 배치하여 차가운 금속 반사 하이라이트 형성.
+- **Open-Sky Moonlight & Fog**: 개방된 상공에서 차갑게 쏟아지는 디렉셔널 문라이트(Moonlight)와 바닥 부근에 깔리는 `#020408` 딥 네이비 지수 안개(`FogExp2`, 밀도 `0.045`).
+- **Emergency Flickering Red Light**: 분화구 위험 구역 및 보스 강하 지점에 적색 비상 경보등(`#ff1e1e`) 불규칙 점멸 연출.
+- **Neon Cyan Accent Light**: 캣워크 난간 및 램프 가이드라인에 시안 네온(`#06b6d4`)을 배치하여 어둠 속에서도 3D 고저차와 동선이 뚜렷하게 식별되도록 지원.
 - **Tactical Vision Modes (투시 필터)**:
   - **기본 모드**: ACES Filmic 톤매핑 + 가장자리 비네트(Vignette) + 미세 스캔라인(Scanline) + 적 근접 시 화면 외곽 적색 경보 테두리(`Alarm Border`) 점멸.
   - **야간투시 (`NVG`)**: 에메랄드 그린 컬러 틴트(`#12ff6e`) 및 안개 색상 다크 그린(`#063311`) 전환.
@@ -65,6 +63,10 @@ flowchart TD
 ---
 
 ## 3. 크리처(`Biotitan`), 캐릭터 & 무기 소켓 아키텍처
+
+### 0) 파일 분리 및 독립 모델링 원칙 (1 Asset = 1 `.blend`)
+- **원본 소스 격리**: 하나의 `.blend` 파일에 여러 에셋을 혼재하지 않고, 무기 5종(`design/Weapons/`), 플레이어 5종·몬스터 5종·보스 1종(`design/Characters/`), 환경 모듈(`design/Environment/`)을 **각각 독립 `.blend` 파일로 제작**합니다.
+- **고해상도 Tripo 3D & 자동 리깅 파이프라인**: 컨셉 시트(`References/*.png`)에서 무손실 분리한 개별 이미지(`References/Cropped/`) 또는 영문 프롬프트(`TRIPO_PROMPTS.md`)를 이용해 Tripo 3D 4K PBR 모델 및 Auto-Rig(`animate_rig`)를 생성(`scripts/tripo_batch_api.py`)하고, 각 독립 `.blend` 파일 및 [work.blend](file:///home/yang/work/ai-sample/design/work.blend)로 정규화·리깅(`scripts/import_tripo_to_blends.py`, `scripts/rig_tripo_mesh.py`)합니다.
 
 ### 1) 결전 보스 메카 `CH_Boss_ArchDreadRaze` (`boss.png` 기준)
 `boss.png`의 사이버 드래곤 메카 보스로 아키텍처를 정의합니다.
